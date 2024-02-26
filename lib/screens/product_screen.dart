@@ -12,6 +12,7 @@ class ProductScreen extends StatelessWidget {
         child: AvifImage.asset(
           imageUrl,
           fit: BoxFit.none,
+          alignment: Alignment.center,
         ),
       ),
     );
