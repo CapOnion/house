@@ -4,10 +4,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:house/screens/splash_screen.dart';
 import 'package:house/widgets/horizontal_list.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:house/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarBrightness: Brightness.light,
   ));
@@ -26,8 +31,12 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       child: CupertinoApp(
         routes: {
-          '/man':(context)=> HorList(sex: 'man',),
-          '/woman':(context)=> HorList(sex: 'woman',)
+          '/man': (context) => HorList(
+                sex: 'man',
+              ),
+          '/woman': (context) => HorList(
+                sex: 'woman',
+              )
         },
         localizationsDelegates: [DefaultMaterialLocalizations.delegate],
         theme: CupertinoThemeData(brightness: Brightness.light),

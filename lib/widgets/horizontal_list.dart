@@ -3,6 +3,9 @@ import 'package:house/widgets/item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_avif/flutter_avif.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:house/firebase_options.dart';
 
 class HorList extends StatefulWidget {
   const HorList({required String sex, super.key});
@@ -12,37 +15,6 @@ class HorList extends StatefulWidget {
 }
 
 class _HorListState extends State<HorList> {
-  List<ItemModel> items = [
-    ItemModel(
-        itemName: 'Худі',
-        itemGroup: 'Худі',
-        itemPrice: '999',
-        itemSex: 'man',
-        itemImage: 'assets/images/hoodie1.avif',
-        isFavorite: false),
-    ItemModel(
-        itemName: 'Футболка',
-        itemGroup: 'Футболки',
-        itemPrice: '550',
-        itemSex: 'man',
-        itemImage: 'assets/images/hoodie2.avif',
-        isFavorite: false),
-    ItemModel(
-        itemName: 'Худі',
-        itemGroup: 'Худі',
-        itemPrice: '699',
-        itemSex: 'man',
-        itemImage: 'assets/images/hoodie3.avif',
-        isFavorite: false),
-    ItemModel(
-        itemName: 'Футболка',
-        itemGroup: 'Футболки',
-        itemPrice: '499',
-        itemSex: 'man',
-        itemImage: 'assets/images/hoodie4.avif',
-        isFavorite: false)
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +55,24 @@ class _HorListState extends State<HorList> {
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           //scrollDirection: Axis.horizontal,
-          child: Column(
+          child: StreamBuilder(
+              stream:
+                  FirebaseFirestore.instance.collection('items').snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {}
+                return Column(
+                  children: [
+                    for (final item in snapshot.data!.docs)
+                      ClothesListItem(
+                        imageUrl: item.get('itemImage'),
+                        name: item.get('itemName'),
+                        price: item.get('itemPrice'),
+                      )
+                  ],
+                );
+              }),
+          /*Column(
             children: [
               for (final item in items)
                 ClothesListItem(
@@ -92,7 +81,7 @@ class _HorListState extends State<HorList> {
                   price: item.itemPrice,
                 ),
             ],
-          ),
+          ),*/
         ));
   }
 }
